@@ -1,7 +1,12 @@
-# 🔍 certstream-go (Realtime CT Log Hunter via WebSocket)
+# certstream-go – Realtime Certificate Transparency Log Streamer
 
-**certstream-go** is a real-time domain stream service based on [Certificate Transparency Logs](https://certificate.transparency.dev/).  
-It aggregates all new SSL/TLS certificates issued publicly and pushes them via WebSocket for monitoring, threat intelligence, recon, and OSINT purposes.
+**certstream-go** is a real-time domain stream service powered by [Certificate Transparency Logs](https://certificate.transparency.dev/).  
+It collects newly issued SSL/TLS certificates and streams extracted domain names over WebSocket, supporting use cases such as:
+
+- Reconnaissance and bug bounty automation
+- Threat intelligence pipelines
+- OSINT domain monitoring
+- Passive DNS & subdomain collection
 
 <p align="center">
   <img src="/screenshots/demo.gif" alt="certstream-go demo" width="700">
@@ -9,66 +14,84 @@ It aggregates all new SSL/TLS certificates issued publicly and pushes them via W
 
 ---
 
-## 🚀 Features
+## Features
 
-- ✅ Auto fetch **usable CT logs** from Chrome's [log list](https://www.gstatic.com/ct/log_list/v3/log_list.json)
-- ✅ Poll **all logs concurrently** using goroutines
-- ✅ Stream domain entries via WebSocket (`ws://localhost:8080/ws`)
-- ✅ Deduplicate certs (avoid spam)
-- ✅ Realtime `Domains/sec` rate monitor
-- ✅ Filter intermediate / empty certs
-
----
-
-## ⚙️ How It Works
-
-1. We grab all **usable** CT logs from `log_list.json` (used by Chrome)
-2. Each CT log is processed in its own goroutine using `GetSTH` → `GetEntries`
-3. New X.509 certs are parsed, extracted, and pushed to:
-   - `stdout`
-   - WebSocket clients (`/ws`)
-4. Domain deduplication is cached for 5 minutes (adjustable)
+- Fetches active CT logs dynamically from Chrome’s official log list
+- Concurrent polling of multiple CT logs (via goroutines)
+- Real-time WebSocket endpoint (`/ws`)
+- Domain deduplication with time-based cache
+- Rate reporting (domains per second)
+- Filters out empty or intermediate certificates
 
 ---
 
-## 📦 Requirements
+## How It Works
 
-- Go 1.20+
+1. Fetch usable CT logs from [log_list.json](https://www.gstatic.com/ct/log_list/v3/log_list.json)
+2. Each log is polled in a dedicated goroutine
+3. Parsed certificates yield Common Name or SAN domains
+4. Results are sent to:
+   - Console (`stdout`)
+   - WebSocket (`ws://localhost:8080/ws`)
+5. Duplicate domains are cached for 5 minutes (configurable)
+
+---
+
+## Requirements
+
+- Go 1.20 or higher
 - Docker (optional)
 
 ---
 
-## 🧪 Quick Start (WS + Realtime Domain Stream)
+## Quick Start
 
-bash
+```bash
 git clone https://github.com/idhin/certdrip.git
-cd certstream-go
+cd certdrip
 
 go mod tidy
 go run main.go
+```
 
-## 👨‍💻 Contributing
+Or run with Docker:
 
-We welcome contributions!
+```bash
+docker-compose up --build
+```
 
-Just fork, code, and PR it.  
-You can also open issues if you find a bug or want to suggest improvements.
+Connect to WebSocket using:
 
-Want to collaborate on advanced CT log use cases?  
-Feel free to reach out — collaboration is open!
+```bash
+npx wscat -c ws://localhost:8080/ws
+```
 
 ---
 
-## ✨ Credits
+## Contributing
 
-Built with ❤️ by:
+Contributions are welcome.
+
+You can help by:
+- Adding support for new CT endpoints
+- Building integrations (Redis, Discord, Kafka, etc)
+- Optimizing performance and concurrency
+- Improving logging, filtering, or output formatting
+
+Just fork the repo, submit a pull request, or open an issue to get involved.
+
+---
+
+## Credits
+
+Developed by:
 
 **Khulafaur Rasyidin (@idhin)**  
-🔗 [github.com/idhin](https://github.com/idhin)  
-☕ Powered by security research, caffeine, and open-source
+[github.com/idhin](https://github.com/idhin)
 
 ---
 
-## 📄 License
+## License
 
-MIT — use it freely for your own research, red team automation, or even cyber countermeasures 😉
+This project is licensed under the MIT License.  
+Free to use, modify, and build upon—especially for defenders, researchers, and security engineers.
