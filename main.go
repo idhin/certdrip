@@ -10,7 +10,6 @@ import (
 	"sync"
 	"time"
 
-	ct "github.com/google/certificate-transparency-go"
 	ctclient "github.com/google/certificate-transparency-go/client"
 	"github.com/google/certificate-transparency-go/jsonclient"
 	"github.com/gorilla/websocket"
@@ -61,11 +60,20 @@ func pollCT() {
 
 		for _, e := range entries {
 			if e.X509Cert != nil {
-				processCert(e.X509Cert)
+				cert, err := x509.ParseCertificate(e.X509Cert.Raw)
+				if err != nil {
+					continue
+				}
+				processCert(cert)
 			} else if len(e.Chain) > 0 {
-				processCert(e.Chain[0])
+				cert, err := x509.ParseCertificate(e.Chain[0].Data)
+				if err != nil {
+					continue
+				}
+				processCert(cert)
 			}
 		}
+		
 
 		start += 10
 		time.Sleep(2 * time.Second)
