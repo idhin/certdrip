@@ -41,7 +41,7 @@ It aggregates all new SSL/TLS certificates issued publicly and pushes them via W
 ## 🧪 Quick Start (WS + Realtime Domain Stream)
 
 bash
-git clone https://github.com/idhin/certstream-go.git
+git clone https://github.com/idhin/certdrip.git
 cd certstream-go
 
 go mod tidy
