@@ -12,6 +12,12 @@ It collects newly issued SSL/TLS certificates and streams extracted domain names
   <img src="/screenshots/demo.gif" alt="certstream-go demo" width="700">
 </p>
 
+## Architecture Diagram
+
+<p align="center">
+  <img src="/screenshots/skema-proses.png" alt="certstream-go process diagram" width="800">
+</p>
+
 ---
 
 ## Features
