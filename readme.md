@@ -51,13 +51,6 @@ go run main.go
 
 We welcome contributions!
 
-Whether you're:
-- Adding new CT logs or endpoint support
-- Building custom outputs (Discord, Redis, Kafka)
-- Improving performance or logic
-- Writing documentation
-- Reporting bugs or proposing enhancements
-
 Just fork, code, and PR it.  
 You can also open issues if you find a bug or want to suggest improvements.
 
