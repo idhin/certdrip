@@ -1,4 +1,4 @@
-# certdrip-go – Realtime Certificate Transparency Log Streamer
+# Realtime Certificate Transparency Log Streamer
 
 **certdrip-go** is a real-time domain stream service powered by [Certificate Transparency Logs](https://certificate.transparency.dev/).  
 It collects newly issued SSL/TLS certificates and streams extracted domain names over WebSocket, supporting use cases such as:
