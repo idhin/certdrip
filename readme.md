@@ -4,7 +4,7 @@
 It aggregates all new SSL/TLS certificates issued publicly and pushes them via WebSocket for monitoring, threat intelligence, recon, and OSINT purposes.
 
 <p align="center">
-  <img src="screenshots/demo.gif" alt="certstream-go demo" width="700">
+  <img src="/screenshots/demo.gif" alt="certstream-go demo" width="700">
 </p>
 
 ---
