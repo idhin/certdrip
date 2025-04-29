@@ -40,7 +40,7 @@ It aggregates all new SSL/TLS certificates issued publicly and pushes them via W
 
 ## 🧪 Quick Start (WS + Realtime Domain Stream)
 
-```bash
+bash
 git clone https://github.com/yourname/certstream-go.git
 cd certstream-go
 
@@ -70,8 +70,8 @@ Feel free to reach out — collaboration is open!
 
 Built with ❤️ by:
 
-**Khulafaur Rasyidin (@nevsleep)**  
-🔗 [github.com/nevsleep](https://github.com/nevsleep)  
+**Khulafaur Rasyidin (@idhin)**  
+🔗 [github.com/idhin](https://github.com/idhin)  
 ☕ Powered by security research, caffeine, and open-source
 
 ---
