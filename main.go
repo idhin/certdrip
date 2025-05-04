@@ -40,10 +40,10 @@ var (
 	cacheDuration     = 5 * time.Minute
 	mu                sync.Mutex
 	upgrader          = websocket.Upgrader{}
-	enableOutputFile  = true
-	enableWebUI       = true
-	outputFilePath    = "output/domains.txt"
-	webUIFolderPath   = "public"
+	enableOutputFile  = true // you can modify this config for save the results
+	enableWebUI       = true // you can modify this config for enable Web UI
+	outputFilePath    = "output/domains.txt" //path of the results
+	webUIFolderPath   = "public" //folder of the results
 	blocklistKeywords = []string{
 		"cloudfront", "amazonaws.com", "googleusercontent.com",
 		"gvt1.com", "akadns.net", "windows.net", "azureedge.net",
