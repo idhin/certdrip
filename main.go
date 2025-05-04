@@ -41,7 +41,9 @@ var (
 	mu                sync.Mutex
 	upgrader          = websocket.Upgrader{}
 	enableOutputFile  = true
+	enableWebUI       = true
 	outputFilePath    = "output/domains.txt"
+	webUIFolderPath   = "public"
 	blocklistKeywords = []string{
 		"cloudfront", "amazonaws.com", "googleusercontent.com",
 		"gvt1.com", "akadns.net", "windows.net", "azureedge.net",
@@ -69,6 +71,11 @@ func main() {
 	go trackRate()
 
 	http.HandleFunc("/ws", handleWS)
+	if enableWebUI {
+		http.Handle("/", http.FileServer(http.Dir(webUIFolderPath)))
+		fmt.Println("[+] Web UI enabled at http://localhost:8080/")
+	}
+
 	fmt.Println("[+] WebSocket server running at :8080/ws")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
