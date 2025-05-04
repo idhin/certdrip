@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -32,15 +33,26 @@ type LogList struct {
 	} `json:"operators"`
 }
 
-
 var (
-	broadcast     = make(chan []byte)
-	clients       = make(map[*websocket.Conn]bool)
-	seenDomains   = make(map[string]time.Time)
-	cacheDuration = 5 * time.Minute
-	mu            sync.Mutex
-	upgrader      = websocket.Upgrader{}
+	broadcast         = make(chan []byte)
+	clients           = make(map[*websocket.Conn]bool)
+	seenDomains       = make(map[string]time.Time)
+	cacheDuration     = 5 * time.Minute
+	mu                sync.Mutex
+	upgrader          = websocket.Upgrader{}
+	enableOutputFile  = true
+	outputFilePath    = "output/domains.txt"
+	blocklistKeywords = []string{
+		"cloudfront", "amazonaws.com", "googleusercontent.com",
+		"gvt1.com", "akadns.net", "windows.net", "azureedge.net",
+	}
 )
+
+func init() {
+	if enableOutputFile {
+		_ = os.MkdirAll("output", 0755)
+	}
+}
 
 func main() {
 	ctLogURLs := fetchCTLogURLs()
@@ -98,8 +110,6 @@ func fetchCTLogURLs() []string {
 	fmt.Printf("[*] Found %d usable CT logs.\n", len(ctLogs))
 	return ctLogs
 }
-
-
 
 func pollCT(ctLogURL string) {
 	ctx := context.Background()
@@ -171,17 +181,37 @@ func pollCT(ctLogURL string) {
 	}
 }
 
+func sanitizeDomain(domain string) (string, bool) {
+	domain = strings.TrimSpace(strings.ToLower(domain))
+	domain = strings.TrimPrefix(domain, "*.")
+
+	if domain == "" || len(domain) < 4 || strings.Contains(domain, " ") {
+		return "", false
+	}
+
+	for _, blk := range blocklistKeywords {
+		if strings.Contains(domain, blk) {
+			return "", false
+		}
+	}
+
+	return domain, true
+}
+
 func processCert(cert *x509.Certificate) {
 	if cert == nil {
 		return
 	}
 
-	domain := cert.Subject.CommonName
-	if domain == "" && len(cert.DNSNames) > 0 {
+	var domain string
+	if cert.Subject.CommonName != "" {
+		domain = cert.Subject.CommonName
+	} else if len(cert.DNSNames) > 0 {
 		domain = cert.DNSNames[0]
 	}
 
-	if domain == "" || len(domain) < 4 || strings.Contains(strings.ToLower(domain), "intermediate") {
+	domain, ok := sanitizeDomain(domain)
+	if !ok {
 		return
 	}
 
@@ -207,6 +237,26 @@ func processCert(cert *x509.Certificate) {
 	payload, _ := json.Marshal(msg)
 	fmt.Printf("[+] %s\n", domain)
 	broadcast <- payload
+
+	if enableOutputFile {
+		go func(d string) {
+			_ = writeToFile(d)
+		}(domain)
+	}
+}
+
+func writeToFile(domain string) error {
+	mu.Lock()
+	defer mu.Unlock()
+
+	f, err := os.OpenFile(outputFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	_, err = f.WriteString(domain + "\n")
+	return err
 }
 
 func handleWS(w http.ResponseWriter, r *http.Request) {
