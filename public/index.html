@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Certdrip Live Feed</title>
+  <style>
+    body {
+      font-family: monospace;
+      background-color: #0e0e0e;
+      color: #00ff88;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #00ffcc;
+    }
+
+    #controls {
+      margin-bottom: 10px;
+    }
+
+    #search,
+    #toggleBtn {
+      padding: 5px;
+      margin-right: 10px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    #search {
+      width: 300px;
+    }
+
+    #toggleBtn {
+      background-color: #00ff88;
+      color: #000;
+      cursor: pointer;
+    }
+
+    #feed .domain {
+      margin-bottom: 5px;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .timestamp {
+      color: #999;
+      margin-left: 8px;
+      font-size: 0.85em;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>🌐 Certdrip Live Feed</h2>
+
+  <div id="controls">
+    <input id="search" type="text" placeholder="Filter domain...">
+    <button id="toggleBtn">⏸️ Pause</button>
+  </div>
+
+  <div id="feed"></div>
+
+  <script>
+    const feed = document.getElementById("feed");
+    const search = document.getElementById("search");
+    const toggleBtn = document.getElementById("toggleBtn");
+
+    let filter = "";
+    let paused = false;
+
+    search.addEventListener("input", () => {
+      filter = search.value.toLowerCase();
+    });
+
+    toggleBtn.onclick = () => {
+      paused = !paused;
+      toggleBtn.textContent = paused ? "▶️ Resume" : "⏸️ Pause";
+    };
+
+    const ws = new WebSocket("ws://" + location.host + "/ws");
+
+    ws.onmessage = function(event) {
+      if (paused) return;
+
+      const data = JSON.parse(event.data);
+      if (filter && !data.domain.toLowerCase().includes(filter)) return;
+
+      const div = document.createElement("div");
+      div.className = "domain";
+      div.innerHTML = `🔎 <strong>${data.domain}</strong><span class="timestamp">[${new Date(data.timestamp).toLocaleTimeString()}]</span>`;
+      feed.prepend(div);
+
+      // Limit to last 500 entries
+      if (feed.children.length > 500) {
+        feed.removeChild(feed.lastChild);
+      }
+    };
+  </script>
+</body>
+</html>

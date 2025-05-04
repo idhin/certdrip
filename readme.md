@@ -8,6 +8,8 @@ It collects newly issued SSL/TLS certificates and streams extracted domain names
 - OSINT domain monitoring
 - Passive DNS & subdomain collection
 
+👉 [Give us a ⭐️ on GitHub!](https://github.com/idhin/certdrip)
+
 <p align="center">
   <img src="/screenshots/demo.gif" alt="certdrip-go demo" width="700">
 </p>
@@ -20,11 +22,22 @@ It collects newly issued SSL/TLS certificates and streams extracted domain names
 
 ---
 
+## 🔍 Web UI Preview
+
+If you prefer a browser-based view, certdrip-go also includes a **minimal Web UI** to view real-time domains as they appear:
+
+<p align="center">
+  <img src="/screenshots/webUI.gif" alt="Web UI demo" width="500">
+</p>
+
+---
+
 ## Features
 
 - Fetches active CT logs dynamically from Chrome’s official log list
 - Concurrent polling of multiple CT logs (via goroutines)
 - Real-time WebSocket endpoint (`/ws`)
+- Minimalist Web UI on port `8081`
 - Domain deduplication with time-based cache
 - Rate reporting (domains per second)
 - Filters out empty or intermediate certificates
@@ -39,6 +52,7 @@ It collects newly issued SSL/TLS certificates and streams extracted domain names
 4. Results are sent to:
    - Console (`stdout`)
    - WebSocket (`ws://localhost:8080/ws`)
+   - Web UI (`http://localhost:8081`)
 5. Duplicate domains are cached for 5 minutes (configurable)
 
 ---
@@ -72,6 +86,12 @@ Connect to WebSocket using:
 npx wscat -c ws://localhost:8080/ws
 ```
 
+Access Web UI via:
+
+```text
+http://localhost:8081
+```
+
 ---
 
 ## Contributing
@@ -85,6 +105,15 @@ You can help by:
 - Improving logging, filtering, or output formatting
 
 Just fork the repo, submit a pull request, or open an issue to get involved.
+
+---
+
+## ⭐️ Support the Project
+
+If you find this project useful or cool, please consider giving it a **star** on GitHub!  
+It motivates further development and helps others discover it too.
+
+👉 [Give us a ⭐️ on GitHub!](https://github.com/idhin/certdrip)
 
 ---
 

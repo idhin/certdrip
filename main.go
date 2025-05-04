@@ -40,8 +40,10 @@ var (
 	cacheDuration     = 5 * time.Minute
 	mu                sync.Mutex
 	upgrader          = websocket.Upgrader{}
-	enableOutputFile  = true
-	outputFilePath    = "output/domains.txt"
+	enableOutputFile  = true // you can modify this config for save the results
+	enableWebUI       = true // you can modify this config for enable Web UI
+	outputFilePath    = "output/domains.txt" //path of the results
+	webUIFolderPath   = "public" //folder of the results
 	blocklistKeywords = []string{
 		"cloudfront", "amazonaws.com", "googleusercontent.com",
 		"gvt1.com", "akadns.net", "windows.net", "azureedge.net",
@@ -68,10 +70,19 @@ func main() {
 	go handleBroadcast()
 	go trackRate()
 
+	// WebSocket endpoint
 	http.HandleFunc("/ws", handleWS)
-	fmt.Println("[+] WebSocket server running at :8080/ws")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+
+	if enableWebUI {
+		http.Handle("/", http.FileServer(http.Dir(webUIFolderPath)))
+		fmt.Println("[+] Web UI enabled at http://localhost:8081/")
+	}
+
+	// Start HTTP server
+	fmt.Println("[+] WebSocket server running at :8081/ws")
+	log.Fatal(http.ListenAndServe(":8081", nil))
 }
+
 
 func fetchCTLogURLs() []string {
 	url := "https://www.gstatic.com/ct/log_list/v3/log_list.json"

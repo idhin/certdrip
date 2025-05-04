@@ -4,5 +4,7 @@ services:
   certstream:
     build: .
     ports:
-      - "8080:8080"
+      - "8081:8081"
+    volumes:
+      - ./output:/app/output
     restart: unless-stopped
