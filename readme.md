@@ -8,6 +8,8 @@ It collects newly issued SSL/TLS certificates and streams extracted domain names
 - OSINT domain monitoring
 - Passive DNS & subdomain collection
 
+👉 [Give us a ⭐️ on GitHub!](https://github.com/idhin/certdrip)
+
 <p align="center">
   <img src="/screenshots/demo.gif" alt="certdrip-go demo" width="700">
 </p>
