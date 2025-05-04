@@ -25,7 +25,7 @@ It collects newly issued SSL/TLS certificates and streams extracted domain names
 If you prefer a browser-based view, certdrip-go also includes a **minimal Web UI** to view real-time domains as they appear:
 
 <p align="center">
-  <img src="/screenshots/webUI.gif" alt="Web UI demo" width="300">
+  <img src="/screenshots/webUI.gif" alt="Web UI demo" width="500">
 </p>
 
 ---
