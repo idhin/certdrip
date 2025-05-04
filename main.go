@@ -70,15 +70,19 @@ func main() {
 	go handleBroadcast()
 	go trackRate()
 
+	// WebSocket endpoint
 	http.HandleFunc("/ws", handleWS)
+
 	if enableWebUI {
 		http.Handle("/", http.FileServer(http.Dir(webUIFolderPath)))
-		fmt.Println("[+] Web UI enabled at http://localhost:8080/")
+		fmt.Println("[+] Web UI enabled at http://localhost:8081/")
 	}
 
-	fmt.Println("[+] WebSocket server running at :8080/ws")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// Start HTTP server
+	fmt.Println("[+] WebSocket server running at :8081/ws")
+	log.Fatal(http.ListenAndServe(":8081", nil))
 }
+
 
 func fetchCTLogURLs() []string {
 	url := "https://www.gstatic.com/ct/log_list/v3/log_list.json"

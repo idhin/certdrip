@@ -7,10 +7,11 @@ RUN apk add --no-cache git
 COPY go.mod ./
 COPY go.sum ./
 COPY main.go ./
+COPY public/ ./public/
 
 RUN go mod tidy
 RUN go build -o certstream-clone
 
-EXPOSE 8080
+EXPOSE 8081
 
 CMD ["./certstream-clone"]
